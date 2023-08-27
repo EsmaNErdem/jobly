@@ -58,18 +58,18 @@ class Company {
     const {name, minEmployees, maxEmployees} = filters;
     const whereExpressions = [];
     const values = [];
-    // checking if re quest includes filter. If it does, creating query accordingly
+    // checking if request includes filter. If it does, creating SQL query accordingly
     if (name) {
       values.push(`%${name}%`)
-      whereExpressions.push(`name ILIKE $${values.length + 1}`)
+      whereExpressions.push(`name ILIKE $${values.length}`)
     }
     if (minEmployees != undefined) {
       values.push(minEmployees)
-      whereExpressions.push(`num_employees >= $${values.length + 1}`)
+      whereExpressions.push(`num_employees >= $${values.length}`)
     }
     if (maxEmployees != undefined) {
       values.push(maxEmployees)
-      whereExpressions.push(`num_employees <= $${values.length + 1}`)
+      whereExpressions.push(`num_employees <= $${values.length}`)
     }
     if(minEmployees > maxEmployees) {
       throw new BadRequestError("Max Employees has to be greater than Min employees")
@@ -80,12 +80,11 @@ class Company {
                 description,
                 num_employees AS "numEmployees",
                 logo_url AS "logoUrl"
-                FROM companies
-                ORDER BY name`
+                FROM companies`
     if (whereExpressions.length > 0) {
-      query += "WHERE" + whereExpressions.join(" AND ")
+      query += " WHERE " + whereExpressions.join(" AND ")
     }
-    query += "ORDER BY name"
+    query += " ORDER BY name"
     const companiesRes = await db.query(query, values);
 
     return companiesRes.rows;

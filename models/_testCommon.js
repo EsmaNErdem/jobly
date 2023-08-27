@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-
+process.env.NODE_ENV = "test";
 const db = require("../db.js");
 const { BCRYPT_WORK_FACTOR } = require("../config");
 

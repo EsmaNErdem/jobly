@@ -1,7 +1,7 @@
 "use strict";
 
 const request = require("supertest");
-
+process.env.NODE_ENV = "test";
 const db = require("../db.js");
 const app = require("../app");
 const User = require("../models/user");
@@ -69,6 +69,22 @@ describe("POST /users", function () {
       }, token: expect.any(String),
     });
   });
+
+  test("unauth for non-admin", async function () {
+    const resp = await request(app)
+        .post("/users")
+        .send({
+          username: "u-new",
+          firstName: "First-new",
+          lastName: "Last-newL",
+          password: "password-new",
+          email: "new@email.com",
+          isAdmin: true,
+        })
+        .set("authorization", `Bearer ${u2Token}`);
+    expect(resp.statusCode).toEqual(401);
+  });
+
 
   test("unauth for anon", async function () {
     const resp = await request(app)
@@ -142,6 +158,13 @@ describe("GET /users", function () {
         },
       ],
     });
+  });
+  
+  test("unauth for non-admin", async function () {
+    const resp = await request(app)
+        .get("/users")
+        .set("authorization", `Bearer ${u2Token}`);
+    expect(resp.statusCode).toEqual(401);
   });
 
   test("unauth for anon", async function () {

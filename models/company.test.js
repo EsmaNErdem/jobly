@@ -1,5 +1,5 @@
 "use strict";
-
+process.env.NODE_ENV = "test";
 const db = require("../db.js");
 const { BadRequestError, NotFoundError } = require("../expressError");
 const Company = require("./company.js");
@@ -86,6 +86,54 @@ describe("findAll", function () {
       },
     ]);
   });
+
+  test("works: with filters", async function () {
+    const filters = {
+      name: "c",
+      minEmployees: 2,
+      maxEmployees: 3
+    }
+    const companies = await Company.findAll(filters);
+    expect(companies).toEqual([
+      {
+        handle: "c2",
+        name: "C2",
+        description: "Desc2",
+        numEmployees: 2,
+        logoUrl: "http://c2.img",
+      },
+      {
+        handle: "c3",
+        name: "C3",
+        description: "Desc3",
+        numEmployees: 3,
+        logoUrl: "http://c3.img",
+      },
+    ])
+  })
+  test("works: with partial filters", async function () {
+    const filters = {
+      name: "2",
+      maxEmployees: 3
+    }
+    const companies = await Company.findAll(filters);
+    expect(companies).toEqual([
+      {
+        handle: "c2",
+        name: "C2",
+        description: "Desc2",
+        numEmployees: 2,
+        logoUrl: "http://c2.img",
+      },
+    ])
+  })
+  test("works: with no matching result", async function () {
+    const filters = {
+      name: "5"
+    }
+    const companies = await Company.findAll(filters);
+    expect(companies).toEqual([])
+  })
 });
 
 /************************************** get */
