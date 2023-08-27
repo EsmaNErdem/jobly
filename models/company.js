@@ -51,6 +51,9 @@ class Company {
    * - maxEmployees
    * - name (will find case-insensitive, partial matches)
    * 
+   *  checks if request includes filter. If it does, creating SQL query accordingly
+   * 
+   * 
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
 
@@ -58,7 +61,7 @@ class Company {
     const {name, minEmployees, maxEmployees} = filters;
     const whereExpressions = [];
     const values = [];
-    // checking if request includes filter. If it does, creating SQL query accordingly
+
     if (name) {
       values.push(`%${name}%`)
       whereExpressions.push(`name ILIKE $${values.length}`)
@@ -106,8 +109,7 @@ class Company {
                   num_employees AS "numEmployees",
                   logo_url AS "logoUrl"
            FROM companies
-           WHERE handle = $1`,
-        [handle]);
+           WHERE handle = $1`, [handle]);
 
     const company = companyRes.rows[0];
 
@@ -163,8 +165,7 @@ class Company {
           `DELETE
            FROM companies
            WHERE handle = $1
-           RETURNING handle`,
-        [handle]);
+           RETURNING handle`, [handle]);
     const company = result.rows[0];
 
     if (!company) throw new NotFoundError(`No company: ${handle}`);

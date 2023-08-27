@@ -111,6 +111,7 @@ describe("findAll", function () {
       },
     ])
   })
+
   test("works: with partial filters", async function () {
     const filters = {
       name: "2",
@@ -127,6 +128,7 @@ describe("findAll", function () {
       },
     ])
   })
+  
   test("works: with no matching result", async function () {
     const filters = {
       name: "5"

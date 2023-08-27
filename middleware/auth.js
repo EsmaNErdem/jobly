@@ -42,7 +42,6 @@ function ensureLoggedIn(req, res, next) {
   }
 }
 
-
 /** Middleware to use when they must be logged in and admin.
  *
  * If not, raises Unauthorized.
@@ -57,8 +56,24 @@ function ensureAdmin(req, res, next) {
   }
 }
 
+
+/** Middleware to use when they must be logged in and admin or logged in and the same user as route parameter.
+ *
+ * If not, raises Unauthorized.
+ */
+
+function ensureAdminOrCorrectUser(req, res, next) {
+  if (!(res.locals.user && (res.locals.user.isAdmin || res.locals.user.username === req.params.username))) {
+    const err = new UnauthorizedError();
+    return next(err);
+  } else {
+    return next();
+  }
+}
+
 module.exports = {
   authenticateJWT,
   ensureLoggedIn,
   ensureAdmin,
+  ensureAdminOrCorrectUser
 };
