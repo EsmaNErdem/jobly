@@ -3,7 +3,10 @@ process.env.NODE_ENV = "test";
 const db = require("../db.js");
 const User = require("../models/user");
 const Company = require("../models/company");
+const Job = require("../models/job.js")
 const { createToken } = require("../helpers/tokens");
+
+const testJobIds = [];
 
 async function commonBeforeAll() {
   // noinspection SqlWithoutWhere
@@ -36,30 +39,61 @@ async function commonBeforeAll() {
         logoUrl: "http://c3.img",
       });
 
-  await User.register({
-    username: "u1",
-    firstName: "U1F",
-    lastName: "U1L",
-    email: "user1@user.com",
-    password: "password1",
-    isAdmin: true,
-  });
-  await User.register({
-    username: "u2",
-    firstName: "U2F",
-    lastName: "U2L",
-    email: "user2@user.com",
-    password: "password2",
-    isAdmin: false,
-  });
-  await User.register({
-    username: "u3",
-    firstName: "U3F",
-    lastName: "U3L",
-    email: "user3@user.com",
-    password: "password3",
-    isAdmin: false,
-  });
+  await User.register(
+      {
+        username: "u1",
+        firstName: "U1F",
+        lastName: "U1L",
+        email: "user1@user.com",
+        password: "password1",
+        isAdmin: true,
+      });
+  await User.register(
+      {
+        username: "u2",
+        firstName: "U2F",
+        lastName: "U2L",
+        email: "user2@user.com",
+        password: "password2",
+        isAdmin: false,
+      });
+  await User.register(
+      {
+        username: "u3",
+        firstName: "U3F",
+        lastName: "U3L",
+        email: "user3@user.com",
+        password: "password3",
+        isAdmin: false,
+      });
+
+  testJobIds[0] = await Job.create(
+                    {
+                      title: "Job1",
+                      salary: 100,
+                      equity: "0.1",
+                      companyHandle: "c1"
+                    }).id
+  await Job.create(
+      {
+        title: "Job2",
+        salary: 200,
+        equity: "0.2",
+        companyHandl3: "c1"
+      })
+  await Job.create(
+    {
+      title: "Job3",
+      salary: 300,
+      equity: "0",
+      companyHandle: "c1"
+    })
+  await Job.create(
+    {
+      title: "Job1",
+      companyHandle: "c1"
+    })
+
 }
 
 async function commonBeforeEach() {
@@ -86,4 +120,5 @@ module.exports = {
   commonAfterAll,
   u1Token,
   u2Token,
+  testJobIds,
 };

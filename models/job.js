@@ -1,7 +1,7 @@
 "use strict";
 
 const db = require("../db");
-const { BadRequestError, NotFoundError } = require("../expressError");
+const { NotFoundError } = require("../expressError");
 const { sqlForPartialUpdate } = require("../helpers/sql");
 
 /** Related functions for jobs. */
@@ -92,21 +92,29 @@ class Job {
 
     static async get(id) {
         const jobRes = await db.query(
-            `SELECT j.id, 
-            j.title, 
-            j.salary, 
-            j.equity, 
-            c.name AS "companyName",
-            c.description AS "companyDescription",
-            c.num_employees AS "numEmployees",
-            c.logo_url AS "logoUrl"
-            FROM jobs j
-            LEFT JOIN companies c ON j.company_handle = c.handle
-            WHERE j.id = $1`, [id]);
+            `SELECT id, 
+                title, 
+                salary, 
+                equity,
+                company_handle AS "companyHandle"
+            FROM jobs 
+            WHERE id = $1`, [id]);
 
         const job = jobRes.rows[0];
 
         if (!job) throw new NotFoundError(`No job: ${id}`);
+
+        const companiesRes = await db.query(
+            `SELECT handle AS "companyHandle",
+                    name AS "companyName",
+                    description AS "companyDescription",
+                    num_employees AS "numEmployees",
+                    logo_url AS "logoUrl"
+             FROM companies
+             WHERE handle = $1`, [job.companyHandle]);
+  
+        delete job.companyHandle;
+        job.company = companiesRes.rows[0];
 
         return job;
     }

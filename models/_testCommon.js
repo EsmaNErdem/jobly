@@ -3,7 +3,7 @@ process.env.NODE_ENV = "test";
 const db = require("../db.js");
 const { BCRYPT_WORK_FACTOR } = require("../config");
 
-const testJobIds = []
+const testJobIds = [];
 
 async function commonBeforeAll() {
   // noinspection SqlWithoutWhere
@@ -42,8 +42,6 @@ async function commonBeforeAll() {
     RETURNING id`);
 
   testJobIds.splice(0, 0, ...resultsJobs.rows.map(r => r.id));
-
-  console.log(testJobIds, "$$$$$$$$$$$")
 }
 
 async function commonBeforeEach() {

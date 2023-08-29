@@ -1,5 +1,4 @@
 "use strict";
-process.env.NODE_ENV = "test";
 /** Routes for companies. */
 
 const jsonschema = require("jsonschema");
