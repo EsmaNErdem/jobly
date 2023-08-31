@@ -11,7 +11,8 @@ const {
   commonAfterEach,
   commonAfterAll,
   u1Token,
-  u2Token,
+  u2Token,  
+  testJobIds,
 } = require("./_testCommon");
 
 beforeAll(commonBeforeAll);
@@ -52,8 +53,7 @@ describe("POST /companies", function () {
   test("fails for anon", async function () {
     const resp = await request(app)
         .post("/companies")
-        .send(newCompany)
-        .set("authorization", `Bearer ${u2Token}`);
+        .send(newCompany);
     expect(resp.statusCode).toEqual(401);
   });
 
@@ -215,6 +215,39 @@ describe("GET /companies/:handle", function () {
         description: "Desc1",
         numEmployees: 1,
         logoUrl: "http://c1.img",
+        jobs: [
+          {
+            id: testJobIds[0],
+            title: "Job1",
+            salary: 100,
+            equity: "0.1",
+            companyHandle: "c1",
+        },
+        {
+            id: expect.any(Number),
+            title: "Job2",
+            salary: 200,
+            equity: "0.2",
+            companyHandle: "c1",
+  
+        },
+        {
+            id: expect.any(Number),
+            title: "Job3",
+            salary: 300,
+            equity: "0",
+            companyHandle: "c1",
+  
+        },
+        {
+            id: expect.any(Number),
+            title: "Job4",
+            salary: null,
+            equity: null,
+            companyHandle: "c1",
+  
+        },
+        ]
       },
     });
   });
@@ -228,6 +261,7 @@ describe("GET /companies/:handle", function () {
         description: "Desc2",
         numEmployees: 2,
         logoUrl: "http://c2.img",
+        jobs: []
       },
     });
   });

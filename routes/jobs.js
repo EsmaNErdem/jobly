@@ -12,13 +12,13 @@ const jobNewSchema = require("../schemas/jobNew.json")
 const jobFilterSchema = require("../schemas/jobSearchSchema.json")
 const jobUpdateSchema = require("../schemas/jobUpdate.json")
 
-
+const router = new express.Router();
 
 /** POST / { job } =>  { job }
  *
  * job should be { title, salary, equity, companyHandle }
  *
- * Returns { id, title, salary, equity, companyHandle }
+ * Returns { job: { id, title, salary, equity, companyHandle } }
  *
  * Authorization required: login
  */

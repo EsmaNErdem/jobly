@@ -12,6 +12,7 @@ const { authenticateJWT } = require("./middleware/auth");
 const authRoutes = require("./routes/auth");
 const companiesRoutes = require("./routes/companies");
 const usersRoutes = require("./routes/users");
+const jobsRoutes = require("./routes/jobs")
 
 // morgan middleware for understanding how your Express application is behaving, diagnosing issues, ensuring security, and optimizing performance.
 const morgan = require("morgan");
@@ -26,6 +27,7 @@ app.use(authenticateJWT);
 app.use("/auth", authRoutes);
 app.use("/companies", companiesRoutes);
 app.use("/users", usersRoutes);
+app.use("/jobs", jobsRoutes);
 
 
 /** Handle 404 errors -- this matches everything */

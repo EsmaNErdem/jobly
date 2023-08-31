@@ -8,6 +8,7 @@ const {
   commonBeforeEach,
   commonAfterEach,
   commonAfterAll,
+  testJobIds,
 } = require("./_testCommon");
 
 beforeAll(commonBeforeAll);
@@ -141,7 +142,7 @@ describe("findAll", function () {
 /************************************** get */
 
 describe("get", function () {
-  test("works", async function () {
+  test("works with jobs", async function () {
     let company = await Company.get("c1");
     expect(company).toEqual({
       handle: "c1",
@@ -149,6 +150,39 @@ describe("get", function () {
       description: "Desc1",
       numEmployees: 1,
       logoUrl: "http://c1.img",
+      jobs: [
+        {
+          id: testJobIds[0],
+          title: "Job1",
+          salary: 100,
+          equity: "0.1",
+          companyHandle: "c1",
+      },
+      {
+          id: expect.any(Number),
+          title: "Job2",
+          salary: 200,
+          equity: "0.2",
+          companyHandle: "c1",
+
+      },
+      {
+          id: expect.any(Number),
+          title: "Job3",
+          salary: 300,
+          equity: "0",
+          companyHandle: "c1",
+
+      },
+      {
+          id: expect.any(Number),
+          title: "Job4",
+          salary: null,
+          equity: null,
+          companyHandle: "c1",
+
+      },
+      ]
     });
   });
 

@@ -48,7 +48,7 @@ router.post("/", ensureAdmin, async function (req, res, next) {
  *
  * Returns list of all users.
  *
- * Authorization required: login
+ * Authorization required: must be an admin
  **/
 
 router.get("/", ensureAdmin, async function (req, res, next) {
@@ -65,7 +65,7 @@ router.get("/", ensureAdmin, async function (req, res, next) {
  *
  * Returns { username, firstName, lastName, isAdmin }
  *
- * Authorization required: login
+ * Authorization required: admin or same-user-as-:username
  **/
 
 router.get("/:username", ensureAdminOrCorrectUser, async function (req, res, next) {
@@ -85,7 +85,7 @@ router.get("/:username", ensureAdminOrCorrectUser, async function (req, res, nex
  *
  * Returns { username, firstName, lastName, email, isAdmin }
  *
- * Authorization required: login
+ * Authorization required: admin or same-user-as-:username
  **/
 
 router.patch("/:username", ensureAdminOrCorrectUser, async function (req, res, next) {
@@ -106,7 +106,7 @@ router.patch("/:username", ensureAdminOrCorrectUser, async function (req, res, n
 
 /** DELETE /[username]  =>  { deleted: username }
  *
- * Authorization required: login
+ * Authorization required: admin or same-user-as-:username
  **/
 
 router.delete("/:username", ensureAdminOrCorrectUser, async function (req, res, next) {
@@ -118,5 +118,21 @@ router.delete("/:username", ensureAdminOrCorrectUser, async function (req, res, 
   }
 });
 
+/** Post /[username]/jobs/[id] => { user }
+ *
+ * Returns { applied: jobId}
+ *
+ * Authorization required: admin or same-user-as-:username
+ **/
+
+router.post("/:username/jobs/:id", ensureAdminOrCorrectUser, async function (req, res, next) {
+  try {
+    const jobId = +req.params.id;
+    const user = await User.applyToJob(req.params.username, jobId);
+    return res.json({ applied: jobId });
+  } catch (err) {
+    return next(err);
+  }
+});
 
 module.exports = router;

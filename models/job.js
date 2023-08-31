@@ -46,7 +46,7 @@ class Job {
     * 
     *  checks if request includes filter. If it does, creating SQL query accordingly
     * 
-    * Returns [{ id, title, salary, equity, companyHandle, company }, ...]
+    * Returns [{ id, title, salary, equity, companyHandle, companyName }, ...]
     * */
 
     static async findAll(filters = {}) {

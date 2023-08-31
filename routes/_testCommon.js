@@ -67,20 +67,20 @@ async function commonBeforeAll() {
         isAdmin: false,
       });
 
-  testJobIds[0] = await Job.create(
+  testJobIds[0] = (await Job.create(
                     {
                       title: "Job1",
                       salary: 100,
                       equity: "0.1",
                       companyHandle: "c1"
-                    }).id
-  await Job.create(
-      {
-        title: "Job2",
-        salary: 200,
-        equity: "0.2",
-        companyHandl3: "c1"
-      })
+                    })).id
+  testJobIds[1] = (await Job.create(
+                    {
+                      title: "Job2",
+                      salary: 200,
+                      equity: "0.2",
+                      companyHandle: "c1"
+                    })).id
   await Job.create(
     {
       title: "Job3",
@@ -90,10 +90,13 @@ async function commonBeforeAll() {
     })
   await Job.create(
     {
-      title: "Job1",
+      title: "Job4",
       companyHandle: "c1"
     })
 
+  await User.applyToJob("u1", testJobIds[0])
+  await User.applyToJob("u1", testJobIds[1])
+  await User.applyToJob("u2", testJobIds[1])
 }
 
 async function commonBeforeEach() {
@@ -108,10 +111,8 @@ async function commonAfterAll() {
   await db.end();
 }
 
-
 const u1Token = createToken({ username: "u1", isAdmin: true });
 const u2Token = createToken({ username: "u2", isAdmin: false });
-
 
 module.exports = {
   commonBeforeAll,

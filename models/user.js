@@ -111,14 +111,13 @@ class User {
            FROM users
            ORDER BY username`,
     );
-
     return result.rows;
   }
 
   /** Given a username, return data about user.
    *
-   * Returns { username, first_name, last_name, is_admin, jobs }
-   *   where jobs is { id, title, company_handle, company_name, state }
+   * Returns { username, first_name, last_name, is_admin, aplications }
+   *   where application is [jobId1, jobId2]
    *
    * Throws NotFoundError if user not found.
    **/
@@ -139,6 +138,13 @@ class User {
 
     if (!user) throw new NotFoundError(`No user: ${username}`);
 
+    const applications = await db.query(
+      `SELECT job_id AS "jobId"
+      FROM applications
+      WHERE username = $1`,
+      [username]
+    )
+    user.applications =  applications.rows.map(a => a.jobId)
     return user;
   }
 
@@ -203,6 +209,34 @@ class User {
     const user = result.rows[0];
 
     if (!user) throw new NotFoundError(`No user: ${username}`);
+  }
+
+
+  static async applyToJob(username, jobId) {
+    const userRes = await db.query(
+      `SELECT username
+      FROM users
+      WHERE username = $1`,
+      [username],
+    );
+    const user = userRes.rows[0]
+
+    if (!user) throw new NotFoundError(`No user: ${username}`);
+
+    const jobRes = await db.query(
+      `SELECT id
+       FROM jobs
+       WHERE id = $1`,
+       [jobId],
+    );
+    const job = jobRes.rows[0];
+
+    if (!job) throw new NotFoundError(`No job: ${id}`);
+
+    const application = await db.query(
+      `INSERT INTO applications (username, job_id)
+      VALUES ($1, $2)`,
+      [username, jobId]);
   }
 }
 
