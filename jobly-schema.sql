@@ -16,6 +16,11 @@ CREATE TABLE users (
   is_admin BOOLEAN NOT NULL DEFAULT FALSE
 );
 
+CREATE TABLE technologies (
+  name TEXT UNIQUE NOT NULL,
+  PRIMARY KEY (name)
+);
+
 -- equity with NUMERIC instead of FLOAT for high precision 
 CREATE TABLE jobs (
   id SERIAL PRIMARY KEY,
@@ -26,10 +31,25 @@ CREATE TABLE jobs (
     REFERENCES companies ON DELETE CASCADE
 );
 
+-- enumerated type for state col 
+CREATE TYPE state AS ENUM ('interested', 'applied', 'accepted', 'rejected');
 CREATE TABLE applications (
+  application_state state,
   username VARCHAR(25)
     REFERENCES users ON DELETE CASCADE,
   job_id INTEGER
     REFERENCES jobs ON DELETE CASCADE,
   PRIMARY KEY (username, job_id)
+);
+
+CREATE TABLE job_technologies (
+  job_id INTEGER REFERENCES jobs(id) ON DELETE CASCADE,
+  technology TEXT REFERENCES technologies(name) ON DELETE CASCADE,
+  PRIMARY KEY (job_id, technology)
+);
+
+CREATE TABLE user_technologies (
+  username VARCHAR(25) REFERENCES users(username) ON DELETE CASCADE,
+  technology TEXT REFERENCES technologies(name) ON DELETE CASCADE,
+  PRIMARY KEY (username, technology)
 );

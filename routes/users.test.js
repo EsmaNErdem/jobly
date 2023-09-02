@@ -34,6 +34,7 @@ describe("POST /users", function () {
           password: "password-new",
           email: "new@email.com",
           isAdmin: false,
+          technologies: ["Python", "Javascript"]
         })
         .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(201);
@@ -44,6 +45,7 @@ describe("POST /users", function () {
         lastName: "Last-newL",
         email: "new@email.com",
         isAdmin: false,
+        technologies: ["Python", "Javascript"]
       }, token: expect.any(String),
     });
   });
@@ -201,7 +203,8 @@ describe("GET /users/:username", function () {
         lastName: "U1L",
         email: "user1@user.com",
         isAdmin: true,
-        applications: [testJobIds[0], testJobIds[1]]
+        applications: [testJobIds[0], testJobIds[1]],
+        technologies: ["Python", "Javascript"]
       },
     });
   });
@@ -427,19 +430,44 @@ describe("POST /users/:username/jobs/:id", function () {
   test("works for admin user", async function () {
     const resp = await request(app)
         .post(`/users/u3/jobs/${testJobIds[0]}`)
+        .send({
+          state: "interested",
+        })
         .set("authorization", `Bearer ${u1Token}`);
     expect(resp.body).toEqual({
-      applied: testJobIds[0]
+      "interested": testJobIds[0]
     });
   });
 
   test("works for correct user", async function () {
     const resp = await request(app)
         .post(`/users/u2/jobs/${testJobIds[0]}`)
+        .send({
+          state: "applied",
+        })
         .set("authorization", `Bearer ${u2Token}`);
     expect(resp.body).toEqual({
       applied: testJobIds[0]
     });
+  });
+
+  test("fails for empty state", async function () {
+    const resp = await request(app)
+        .post(`/users/u2/jobs/${testJobIds[0]}`)
+        .set("authorization", `Bearer ${u2Token}`);
+    expect(resp.body).toEqual({
+      "interested": testJobIds[0]
+    });
+  });
+
+  test("fails for wrong state", async function () {
+    const resp = await request(app)
+        .post(`/users/u2/jobs/${testJobIds[0]}`)
+        .send({
+          state: "wrong",
+        })
+        .set("authorization", `Bearer ${u2Token}`);
+    expect(resp.statusCode).toEqual(400);
   });
 
   test("fails for unauth user", async function () {
@@ -458,6 +486,9 @@ describe("POST /users/:username/jobs/:id", function () {
   test("fails for username not found", async function () {
     const resp = await request(app)
         .post(`/users/nope/jobs/${testJobIds[0]}`)
+        .send({
+          state: "interested",
+        })
         .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(404);
   });
@@ -465,6 +496,80 @@ describe("POST /users/:username/jobs/:id", function () {
   test("fails for jobId not found", async function () {
     const resp = await request(app)
         .post(`/users/nope/jobs/0`)
+        .send({
+          state: "interested",
+        })
+        .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(404);
+  });
+})
+
+/************************************** PATCH /users/:username/jobs/:id */
+
+describe("PATCH /users/:username/jobs/:id", function () {
+  test("works for admin user", async function () {
+    const resp = await request(app)
+        .patch(`/users/u1/jobs/${testJobIds[0]}`)
+        .send({
+          state: "accepted",
+        })
+        .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.body).toEqual({
+      accepted: testJobIds[0]
+    });
+  });
+
+  test("works for correct user", async function () {
+    const resp = await request(app)
+        .patch(`/users/u2/jobs/${testJobIds[1]}`)
+        .send({
+          state: "applied",
+        })
+        .set("authorization", `Bearer ${u2Token}`);
+    expect(resp.body).toEqual({
+      applied: testJobIds[1]
+    });
+  });
+
+  test("fails for wrong state", async function () {
+    const resp = await request(app)
+        .patch(`/users/u2/jobs/${testJobIds[0]}`)
+        .send({
+          state: "wrong",
+        })
+        .set("authorization", `Bearer ${u2Token}`);
+    expect(resp.statusCode).toEqual(400);
+  });
+
+  test("fails for unauth user", async function () {
+    const resp = await request(app)
+        .patch(`/users/u1/jobs/${testJobIds[0]}`)
+        .set("authorization", `Bearer ${u2Token}`);
+    expect(resp.statusCode).toEqual(401);
+  });
+
+  test("fails for anon", async function () {
+    const resp = await request(app)
+        .patch(`/users/u1/jobs/${testJobIds[0]}`);
+    expect(resp.statusCode).toEqual(401);
+  });
+
+  test("fails for username not found", async function () {
+    const resp = await request(app)
+        .patch(`/users/nope/jobs/${testJobIds[0]}`)
+        .send({
+          state: "interested",
+        })
+        .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(404);
+  });
+
+  test("fails for jobId not found", async function () {
+    const resp = await request(app)
+        .patch(`/users/nope/jobs/0`)
+        .send({
+          state: "interested",
+        })
         .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(404);
   });

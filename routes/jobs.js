@@ -16,9 +16,11 @@ const router = new express.Router();
 
 /** POST / { job } =>  { job }
  *
- * job should be { title, salary, equity, companyHandle }
+ * job should be { title, salary, equity, companyHandle, technologies }
  *
- * Returns { job: { id, title, salary, equity, companyHandle } }
+ * technologies should be array of techs
+ * 
+ * Returns { job: { id, title, salary, equity, companyHandle, technologies } }
  *
  * Authorization required: login
  */

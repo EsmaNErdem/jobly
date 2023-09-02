@@ -26,6 +26,12 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 30
+        },
+        "technologies": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
         }
     },
     "additionalProperties": false

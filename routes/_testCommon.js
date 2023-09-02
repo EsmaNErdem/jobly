@@ -47,6 +47,7 @@ async function commonBeforeAll() {
         email: "user1@user.com",
         password: "password1",
         isAdmin: true,
+        technologies: ["Python", "Javascript"]
       });
   await User.register(
       {
@@ -72,7 +73,8 @@ async function commonBeforeAll() {
                       title: "Job1",
                       salary: 100,
                       equity: "0.1",
-                      companyHandle: "c1"
+                      companyHandle: "c1",
+                      technologies: ["Python", "Javascript"]
                     })).id
   testJobIds[1] = (await Job.create(
                     {
@@ -94,9 +96,9 @@ async function commonBeforeAll() {
       companyHandle: "c1"
     })
 
-  await User.applyToJob("u1", testJobIds[0])
-  await User.applyToJob("u1", testJobIds[1])
-  await User.applyToJob("u2", testJobIds[1])
+  await User.applyToJob("u1", testJobIds[0], "interested")
+  await User.applyToJob("u1", testJobIds[1], "applied")
+  await User.applyToJob("u2", testJobIds[1], "rejected")
 }
 
 async function commonBeforeEach() {

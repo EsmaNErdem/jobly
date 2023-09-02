@@ -62,6 +62,7 @@ describe("register", function () {
     lastName: "Tester",
     email: "test@test.com",
     isAdmin: false,
+    technologies: ["Python", "Javascript", "C/C++"]
   };
 
   test("works", async function () {
@@ -141,6 +142,7 @@ describe("get", function () {
       lastName: "U1L",
       email: "u1@email.com",
       isAdmin: false,
+      technologies: ["Python", "Javascript"],
       applications: [testJobIds[0], testJobIds[2]]
     });
   });
@@ -235,7 +237,7 @@ describe("remove", function () {
 
 describe("applyToJob", function () {
   test("works", async function () {
-    await User.applyToJob("u2", testJobIds[1]);
+    await User.applyToJob("u2", testJobIds[1], {state: 'interested'});
     const res = await db.query(
         `SELECT * 
         FROM applications
@@ -243,13 +245,14 @@ describe("applyToJob", function () {
         [testJobIds[1]]);
     expect(res.rows).toEqual([{
       username: "u2",
-      job_id: testJobIds[1]
+      job_id: testJobIds[1],
+      application_state: "interested"
     }]);
   });
 
   test("fails if no such user", async function () {
     try {
-      await User.applyToJob("bad", testJobIds[0]);
+      await User.applyToJob("bad", testJobIds[0], {state: 'interested'});
       fail();
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
@@ -258,7 +261,7 @@ describe("applyToJob", function () {
 
   test("fails if no such job", async function () {
     try {
-      await User.applyToJob("bad", 0);
+      await User.applyToJob("bad", 0, {state: 'interested'});
       fail();
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
@@ -266,3 +269,38 @@ describe("applyToJob", function () {
   });
 });
 
+/************************************** updateApplication */
+
+describe("updateApplication", function () {
+  test("works", async function () {
+    await User.updateApplication("u1", testJobIds[0], {state: 'applied'});
+    const res = await db.query(
+        `SELECT * 
+        FROM applications
+        WHERE job_id = $1 AND username = $2`,
+        [testJobIds[0], "u1"]);
+    expect(res.rows).toEqual([{
+      username: "u1",
+      job_id: testJobIds[0],
+      application_state: "applied"
+    }]);
+  });
+
+  test("fails if no such user", async function () {
+    try {
+      await User.updateApplication("bad", testJobIds[0], {state: 'interested'});
+      fail();
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+
+  test("fails if no such job", async function () {
+    try {
+      await User.updateApplication("bad", 0, {state: 'interested'});
+      fail();
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+});

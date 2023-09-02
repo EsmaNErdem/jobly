@@ -9,20 +9,21 @@ const { sqlForPartialUpdate } = require("../helpers/sql");
 class Job {
     /** Create a data (from data), update db, return new data data.
    *
-   * data should be { title, salary, equity, companyHandle }
+   * data should be { title, salary, equity, companyHandle, technologies }
    *
-   * Returns { id, title, salary, equity, companyHandle }
+   * technologies should be [tech1, tech2...]
+   * 
+   * Returns { id, title, salary, equity, companyHandle, technologies }
    *
    * Throws BadRequestError if job already in database.
    * */
-
-    static async create({ title, salary, equity, companyHandle }) {
+    static async create({ title, salary, equity, companyHandle, technologies = [] }) {
         const result = await db.query(
             `INSERT INTO jobs
             (title, 
-             salary, 
-             equity, 
-             company_handle)
+                salary, 
+                equity, 
+                company_handle)
             VALUES ($1, $2, $3, $4)
             RETURNING id, title, salary, equity, company_handle AS "companyHandle"`,
             [
@@ -32,10 +33,42 @@ class Job {
                 companyHandle
             ],
         )
+
         const job = result.rows[0]
+        
+        if (technologies.length !== 0) {
+            job.technologies = []
+            for (const tech of technologies) {
+            // Check if the technology exists (case-insensitive search)
+            let techRes = await db.query(
+                `SELECT name
+                FROM technologies
+                WHERE name ILIKE $1`,
+                [tech]
+            )
+
+            if (techRes.rows.length === 0) {
+                // Technology doesn't exist, so insert it
+                techRes = await db.query(
+                    `INSERT INTO technologies (name)
+                    VALUES ($1)
+                    RETURNING name`,
+                    [tech]
+                )
+            }
+
+            const jobTechs = await db.query(
+                `INSERT INTO job_technologies (job_id, technology)
+                VALUES ($1, $2)
+                RETURNING technology`,
+                [job.id, techRes.rows[0].name]
+            )
+            job.technologies.push(jobTechs.rows[0].technology)
+        }}
         
         return job
     }
+
 
     /** Find all jobs.
     *
@@ -115,6 +148,18 @@ class Job {
   
         delete job.companyHandle;
         job.company = companiesRes.rows[0];
+
+        const jobTechs = await db.query(
+            `SELECT technology
+            FROM job_technologies
+            WHERE job_id = $1`,
+            [id]
+        )
+        
+        if (jobTechs.rows.length !== 0) {
+            job.technologies = jobTechs.rows.map(t => t.technology)
+        }
+
 
         return job;
     }

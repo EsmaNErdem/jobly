@@ -31,6 +31,12 @@
     },
     "isAdmin": {
       "type": "boolean"
+    },
+    "technologies": {
+      "type": "array",
+      "items": {
+          "type": "string"
+      }
     }
   },
   "additionalProperties": false,

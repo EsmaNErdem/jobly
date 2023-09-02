@@ -28,9 +28,17 @@ describe("POST /jobs", function () {
     salary: 100,
     equity: "0.6",
     companyHandle: "c1",
+    technologies: ["Python", "Javascript"]
   };
 
-  test("ok for admin", async function () {
+  const newJob2 = {
+    title: "new",
+    salary: 100,
+    equity: "0.6",
+    companyHandle: "c1"
+  };
+
+  test("ok for admin with techs", async function () {
     const resp = await request(app)
         .post("/jobs")
         .send(newJob)
@@ -43,6 +51,21 @@ describe("POST /jobs", function () {
       }
     });
   });
+
+  test("ok for admin", async function () {
+    const resp = await request(app)
+        .post("/jobs")
+        .send(newJob2)
+        .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(201);
+    expect(resp.body).toEqual({
+      job: {
+        id: expect.any(Number),
+        ...newJob2,
+      }
+    });
+  });
+
 
   test("fails for non-admin", async function () {
     const resp = await request(app)
@@ -239,7 +262,8 @@ describe("GET /jobs/:id", function () {
             companyDescription: "Desc1",
             numEmployees: 1,
             logoUrl: "http://c1.img",
-          }
+          },
+        technologies: ["Python", "Javascript"]
       },
     });
   });
@@ -249,7 +273,7 @@ describe("GET /jobs/:id", function () {
     expect(resp.statusCode).toEqual(404);
   });
 });
-  /************************************** PATCH /jobs/:handle */
+  /************************************** PATCH /jobs/:id */
 
 describe("PATCH /jobs/:id", function () {
   test("works for admins", async function () {
@@ -328,7 +352,7 @@ describe("PATCH /jobs/:id", function () {
   });
 });
 
-/************************************** DELETE /companies/:handle */
+/************************************** DELETE /jobs/:id */
 
 describe("DELETE /jobs/:id", function () {
   test("works for users", async function () {

@@ -28,6 +28,12 @@
       "minLength": 6,
       "maxLength": 60,
       "format": "email"
+    },
+    "technologies": {
+      "type": "array",
+      "items": {
+          "type": "string"
+      }
     }
   },
   "additionalProperties": false,

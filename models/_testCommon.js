@@ -11,7 +11,13 @@ async function commonBeforeAll() {
   // noinspection SqlWithoutWhere
   await db.query("DELETE FROM users");
   // noinspection SqlWithoutWhere
-  await db.query("DELETE FROM jobs");
+  await db.query("DELETE FROM applications");
+  // noinspection SqlWithoutWhere
+  await db.query("DELETE FROM technologies");
+  // noinspection SqlWithoutWhere
+  await db.query("DELETE FROM job_technologies");
+  // noinspection SqlWithoutWhere
+  await db.query("DELETE FROM user_technologies");
 
   await db.query(`
     INSERT INTO companies(handle, name, num_employees, description, logo_url)
@@ -20,18 +26,18 @@ async function commonBeforeAll() {
            ('c3', 'C3', 3, 'Desc3', 'http://c3.img')`);
 
   await db.query(`
-        INSERT INTO users(username,
-                          password,
-                          first_name,
-                          last_name,
-                          email)
-        VALUES ('u1', $1, 'U1F', 'U1L', 'u1@email.com'),
-               ('u2', $2, 'U2F', 'U2L', 'u2@email.com')
-        RETURNING username`,
-      [
-        await bcrypt.hash("password1", BCRYPT_WORK_FACTOR),
-        await bcrypt.hash("password2", BCRYPT_WORK_FACTOR),
-      ]);
+    INSERT INTO users(username,
+                      password,
+                      first_name,
+                      last_name,
+                      email)
+    VALUES ('u1', $1, 'U1F', 'U1L', 'u1@email.com'),
+            ('u2', $2, 'U2F', 'U2L', 'u2@email.com')
+    RETURNING username`,
+  [
+    await bcrypt.hash("password1", BCRYPT_WORK_FACTOR),
+    await bcrypt.hash("password2", BCRYPT_WORK_FACTOR),
+  ]);
 
   const resultsJobs = await db.query(`
     INSERT INTO jobs (title, salary, equity, company_handle)
@@ -44,10 +50,31 @@ async function commonBeforeAll() {
   testJobIds.splice(0, 0, ...resultsJobs.rows.map(r => r.id));
 
   await db.query(`
-  INSERT INTO applications (username, job_id)
-  VALUES ('u1', $1),
-        ('u1', $2)`,
+    INSERT INTO applications (username, job_id, application_state)
+    VALUES ('u1', $1, 'interested'),
+          ('u1', $2, 'rejected')`,
+    [testJobIds[0], testJobIds[2]]);
+  
+  await db.query(`
+  INSERT INTO technologies (name)
+  VALUES ('Python'),
+        ('Javascript')`
+  )
+
+  await db.query(`
+  INSERT INTO job_technologies (job_id, technology)
+  VALUES ($1, 'Python'),
+        ($1, 'Javascript'),
+        ($2, 'Python')`,
   [testJobIds[0], testJobIds[2]]);
+
+  await db.query(`
+  INSERT INTO user_technologies (username, technology)
+  VALUES ('u1', 'Python'),
+        ('u1', 'Javascript'),
+        ('u2', 'Python')`
+  )
+
 }
 
 async function commonBeforeEach() {

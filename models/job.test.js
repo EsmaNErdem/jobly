@@ -23,6 +23,7 @@ describe("create", function () {
         salary: 100,
         equity: "0.05",
         companyHandle: "c1",
+        technologies: ["Python", "Javascript", "C/C++"]
     };
     // When you insert data into NUMERIC column, it is being stored as a string in the database, which is the default behavior for most SQL database systems when you insert a numeric value as a string.
     test("works", async function () {
@@ -167,7 +168,8 @@ describe("get", function () {
         companyDescription: "Desc1",
         numEmployees: 1,
         logoUrl: "http://c1.img",
-      }
+      },
+      technologies: ["Python", "Javascript"]
     });
   });
 
