@@ -14,11 +14,6 @@ const { UnauthorizedError } = require("../expressError");
  * 
  * For authorization include your token in headers
  * Authorization: Bearer your-token-here
- * 
- * in Insomnia in headers
- * authorization
- * Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkVzbWFOIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTY5MzY5ODEwM30.nDjCUUdlHldcnTL0IQWrsei6AUXcCYLuhB7WDM_UnCA
- *
  * It's not an error if no token was provided or if the token is not valid.
  */
 
