@@ -30,28 +30,34 @@ The Jobly Backend is a RESTful API application designed to simulate a job search
 
 ```
 git clone https://github.com/EsmaNErdem/jobly.git
-
 ```
+
 2. Initialize the Project: Inside the project directory, initialize the project by running: 
 
 ```
 npm init
-
 ```
+
 3. Install Dependencies: Install the project dependencies using npm:
 
 ```
 npm install
-
 ```
 
-4. Run the Application: Start the server by running:
+4. Creating jobly database and test database while seeding initial data:
+
+```
+psql
+\i jobly.sql
+```
+
+5. Run the Application: Start the server by running:
 
 ```
 node server.js
 ```
     
-5. Run Tests: To run the tests and ensure everything is working correctly, use Jest:
+6. Run Tests: To run the tests and ensure everything is working correctly, use Jest:
 
 ```
 jest -i
