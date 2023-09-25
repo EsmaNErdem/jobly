@@ -22,7 +22,7 @@ The Jobly Backend is a RESTful API application designed to simulate a job search
 
 * Node.js/Express: The backend server is built using Node.js and the Express framework.
 
-* PostgreSQL: We use PostgreSQL as our relational database to store and manage data efficiently.
+* PostgreSQL: PostgreSQL is used as relational database to store and manage data efficiently.
 
 # To installing depencies 
 
@@ -80,7 +80,7 @@ Once you've started the server, you can interact with the backend using any API 
   "firstName": "your-first-name",
   "lastName": "your-last-name",
   "email": "your-email",
-  "technologies": "your-technologies"
+  "technologies": ["list your-technologies"]
 }
 ```
 
