@@ -63,6 +63,36 @@ node server.js
 jest -i
 ```
 
+## Navigating the Backen App
+
+Once you've started the server, you can interact with the backend using any API testing tool like Insomnia. Here's how to get started:
+
+### User Registration
+
+1. Make a POST request to `/auth/register`.
+
+2. In the request body, provide your user credentials in JSON format:
+
+```json
+{
+  "username": "your-username",
+  "password": "your-password",
+  "firstName": "your-first-name",
+  "lastName": "your-last-name",
+  "email": "your-email",
+  "technologies": "your-technologies"
+}
+```
+
+3. Upon successful registration, you will receive a token. Alternatively, you can use a test admin token available in the jobly-seed.sql file.
+
+### User Login
+
+When sending next request to any route, simply include your token in the request headers as follows:
+
+Authorization: Bearer your-token-here
+
+This will authenticate you and grant access to protected routes. Enjoy exploring the app! 
 
 ## Contribution
 
