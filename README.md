@@ -59,6 +59,8 @@ jest -i
 
 ## Navigating the Backen App
 
+![Jobly Software Architecture](/static//Jobly_architecture.png)
+
 Once you've started the server, you can interact with the backend using any API testing tool like Insomnia. Here's how to get started:
 
 ### User Registration

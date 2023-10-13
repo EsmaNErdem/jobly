@@ -148,9 +148,9 @@ class User {
 
   /** Given a username, return data about user.
    *
-   * Returns { username, first_name, last_name, is_admin, aplications }
+   * Returns { username, first_name, last_name, is_admin, techologies, aplications }
+   *   where technologies is [tech1, tech2]
    *   where application is [jobId1, jobId2]
-   *
    * Throws NotFoundError if user not found.
    **/
 
