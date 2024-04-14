@@ -90,6 +90,13 @@ Authorization: Bearer your-token-here
 
 This will authenticate you and grant access to protected routes. Enjoy exploring the app! 
 
+### CI/CD Pipeline
+
+Implemented CI/CD pipeline utilizing AWS. For this pipeline, Amazon EC2 is used to build server with S3 data storage and CodeDeploy to automate application deployments to EC2 and CodePipeline to automate the build, test, and deploy phases of your release process.
+
+
+![Jobly CI/CD Pipeline](/static//jobly_cicd.png)
+
 ## Contribution
 
 We welcome contributions, ideas, and feedback to improve this application. Feel free to open issues, submit pull requests, or reach out with your suggestions. Your contributions are greatly appreciated.
