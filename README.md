@@ -97,6 +97,18 @@ Implemented CI/CD pipeline utilizing AWS. For this pipeline, Amazon EC2 is used 
 
 ![Jobly CI/CD Pipeline](/static//jobly_cicd.png)
 
+EC2 script on creation to install the CodeDeploy Agent:
+```
+#!/bin/bash
+sudo yum -y update
+sudo yum -y install ruby
+sudo yum -y install wget
+cd /home/ec2-user
+wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install
+sudo chmod +x ./install
+sudo ./install auto
+```
+
 ## Contribution
 
 We welcome contributions, ideas, and feedback to improve this application. Feel free to open issues, submit pull requests, or reach out with your suggestions. Your contributions are greatly appreciated.
