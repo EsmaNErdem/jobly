@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Give appropriate permissions to the express-app directory
-sudo chown -R ec2-user:ec2-user /home/ec2-user/express-app
-sudo chmod -R 755 /home/ec2-user/express-app
+sudo chown -R ec2-user:ec2-user /home/ec2-user/jobly-app
+sudo chmod -R 755 /home/ec2-user/jobly-app
 
 # Navigate to the working directory
-cd /home/ec2-user/express-app
+cd /home/ec2-user/jobly-app
 
 # Set up NVM environment
 export NVM_DIR="$HOME/.nvm"
